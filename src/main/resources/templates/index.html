@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="jquery/jquery3.1.1.min.js"></script>
+    <script src="jstree/dist/jstree.min.js"></script>
+    <link rel="stylesheet" href="jstree/dist/themes/default/style.min.css" />
+    <style>
+    html, body { background:#ebebeb; font-size:14px; font-family:Verdana; margin:0; padding:0; }
+    #container { min-width:320px; margin:0px auto 0 auto; background:white; border-radius:0px; padding:0px; overflow:hidden; }
+    #tree .folder { background:url('./file_sprite.png') right bottom no-repeat; }
+		#tree .file { background:url('./file_sprite.png') 0 0 no-repeat; }
+		#tree .file-pdf { background-position: -32px 0 }
+		#tree .file-as { background-position: -36px 0 }
+		#tree .file-c { background-position: -72px -0px }
+		#tree .file-iso { background-position: -108px -0px }
+		#tree .file-htm, #tree .file-html, #tree .file-xml, #tree .file-xsl { background-position: -126px -0px }
+		#tree .file-cf { background-position: -162px -0px }
+		#tree .file-cpp { background-position: -216px -0px }
+		#tree .file-cs { background-position: -236px -0px }
+		#tree .file-sql { background-position: -272px -0px }
+		#tree .file-xls, #tree .file-xlsx { background-position: -362px -0px }
+		#tree .file-h { background-position: -488px -0px }
+		#tree .file-crt, #tree .file-pem, #tree .file-cer { background-position: -452px -18px }
+		#tree .file-php { background-position: -108px -18px }
+		#tree .file-jpg, #tree .file-jpeg, #tree .file-png, #tree .file-gif, #tree .file-bmp { background-position: -126px -18px }
+		#tree .file-ppt, #tree .file-pptx { background-position: -144px -18px }
+		#tree .file-rb { background-position: -180px -18px }
+		#tree .file-text, #tree .file-txt, #tree .file-md, #tree .file-log, #tree .file-htaccess { background-position: -254px -18px }
+		#tree .file-doc, #tree .file-docx { background-position: -362px -18px }
+		#tree .file-zip, #tree .file-gz, #tree .file-tar, #tree .file-rar { background-position: -416px -18px }
+		#tree .file-js { background-position: -434px -18px }
+		#tree .file-css { background-position: -144px -0px }
+		#tree .file-fla { background-position: -398px -0px }
+header {
+    background-color:black;
+    color:white;
+    text-align:center;
+    padding:5px;
+}
+nav {
+    line-height:30px;
+    background-color:#eeeeee;
+    height:600px;
+    width:300px;
+    float:left;
+    padding:5px;
+}
+section {
+    width:350px;
+    float:left;
+    padding:10px;
+}
+footer {
+    background-color:black;
+    color:white;
+    clear:both;
+    text-align:center;
+    padding:5px;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>City Gallery</h1>
+</header>
+
+<nav>
+    <div id="container">
+        <div id="tree"></div>
+    </div>
+</nav>
+
+<section>
+    <img id="capture"></img>
+</section>
+
+</body>
+
+<script>
+$(function() {
+  $('#tree').jstree({
+    'core' : {
+      'data' : {
+        "url" : "/browse?capdir=report-2020-05-28%2015-00-28",
+        "dataType" : "json" // needed only if you do not supply JSON headers
+      },
+      'types' : {
+		'default' : { 'icon' : 'folder' },
+		'file' : { 'valid_children' : [], 'icon' : 'file' }
+	  },
+	  'themes' : {
+		'responsive' : false,
+		'variant' : 'small',
+		'stripes' : true
+	  }
+    }
+  }).on("select_node.jstree", function(event, node) {
+        var selected = node.instance.get_selected();
+        $('#capture').attr('src', selected);
+        alert(selected);
+    });
+});
+
+</script>
+</html>
