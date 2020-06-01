@@ -22,5 +22,5 @@ public interface StorageService {
 
     void deleteAll();
 
-    Node browse(String root);
+    Node browse();
 }

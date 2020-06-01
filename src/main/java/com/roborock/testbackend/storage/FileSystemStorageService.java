@@ -1,5 +1,6 @@
 package com.roborock.testbackend.storage;
 
+import net.lingala.zip4j.ZipFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -43,6 +44,7 @@ public class FileSystemStorageService implements StorageService{
     @Override
     public void store(MultipartFile file) {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        System.out.println(filename);
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + filename);
@@ -56,6 +58,15 @@ public class FileSystemStorageService implements StorageService{
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, this.rootLocation.resolve(filename),
                         StandardCopyOption.REPLACE_EXISTING);
+            }
+            if (filename.endsWith("zip")) {
+                String destination = this.rootLocation.toString();
+                String sourceFile = this.rootLocation.resolve(filename).toString();
+                System.out.println("destination = " + destination);
+                System.out.println("sourceFile = " + sourceFile);
+                ZipFile zipFile = new ZipFile(sourceFile);
+                zipFile.extractAll(destination);
+                Files.delete(this.rootLocation.resolve(filename));
             }
         }
         catch (IOException e) {
@@ -105,7 +116,7 @@ public class FileSystemStorageService implements StorageService{
     }
 
     @Override
-    public Node browse(String capdir) {
+    public Node browse() {
         /*
         if (root.nodeType == NodeType.FILE) return;
         File root = new File(rootLocation + File.separator + rootDir);
@@ -119,9 +130,9 @@ public class FileSystemStorageService implements StorageService{
             }
         }
         return node; */
-        Path path = this.rootLocation.resolve(capdir);
-        Node root = new Node(capdir, capdir, "folder", "folder");
-        File directory = path.toFile();
+        String uploadDir = this.rootLocation.getFileName().toString();
+        Node root = new Node(uploadDir, uploadDir, "folder", "folder");
+        File directory = this.rootLocation.toFile();
         walkFileTree(root, directory);
         return root;
     }
