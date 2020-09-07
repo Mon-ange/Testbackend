@@ -1,4 +1,4 @@
-package com.roborock.testbackend.storage;
+package com.roborock.testbackend.services.storage;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

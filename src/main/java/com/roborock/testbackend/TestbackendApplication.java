@@ -1,7 +1,7 @@
 package com.roborock.testbackend;
 
-import com.roborock.testbackend.storage.StorageProperties;
-import com.roborock.testbackend.storage.StorageService;
+import com.roborock.testbackend.services.storage.StorageProperties;
+import com.roborock.testbackend.services.storage.StorageService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

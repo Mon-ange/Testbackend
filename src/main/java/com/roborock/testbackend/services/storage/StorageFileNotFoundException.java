@@ -1,4 +1,4 @@
-package com.roborock.testbackend.storage;
+package com.roborock.testbackend.services.storage;
 
 public class StorageFileNotFoundException extends StorageException {
     public StorageFileNotFoundException(String message) {

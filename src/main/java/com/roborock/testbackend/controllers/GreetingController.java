@@ -1,4 +1,4 @@
-package com.roborock.testbackend;
+package com.roborock.testbackend.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +18,4 @@ public class GreetingController {
         System.out.println(name);
         return "greeting";
     }
-
-
-
 }

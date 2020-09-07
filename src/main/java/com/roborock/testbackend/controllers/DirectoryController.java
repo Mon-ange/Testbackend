@@ -1,11 +1,10 @@
-package com.roborock.testbackend;
+package com.roborock.testbackend.controllers;
 
-import com.roborock.testbackend.storage.Node;
-import com.roborock.testbackend.storage.StorageService;
+import com.roborock.testbackend.services.storage.Node;
+import com.roborock.testbackend.services.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
