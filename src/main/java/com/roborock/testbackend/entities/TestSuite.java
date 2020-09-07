@@ -46,6 +46,50 @@ public class TestSuite {
         return id;
     }
 
+    public String getProductName() {
+        return productName;
+    }
+
+    public String getProductVersion() {
+        return productVersion;
+    }
+
+    public String getClient() {
+        return client;
+    }
+
+    public String getMobilePlatform() {
+        return mobilePlatform;
+    }
+
+    public String getRobotSn() {
+        return robotSn;
+    }
+
+    public String getRobotMacAddress() {
+        return robotMacAddress;
+    }
+
+    public String getRobotName() {
+        return robotName;
+    }
+
+    public int getPassedCases() {
+        return passedCases;
+    }
+
+    public int getFailedCases() {
+        return failedCases;
+    }
+
+    public String getReportFile() {
+        return reportFile;
+    }
+
+    public String getLogCheckResultFile() {
+        return logCheckResultFile;
+    }
+
     public void setReportFile(String reportFileName) {
         this.reportFile = reportFileName;
     }

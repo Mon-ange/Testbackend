@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="jquery/jquery3.1.1.min.js"></script>
-    <script src="jstree/dist/jstree.min.js"></script>
+
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css"/>
     <link rel="stylesheet" href="jstree/dist/themes/default/style.min.css" />
+    <link  rel="stylesheet" href="bootstrap/dashboard.css">
     <style>
     html, body { background:#ebebeb; font-size:14px; font-family:Verdana; margin:0; padding:0; }
     #container { min-width:320px; margin:0px auto 0 auto; background:white; border-radius:0px; padding:0px; overflow:hidden; }
@@ -31,78 +32,135 @@
 		#tree .file-js { background-position: -434px -18px }
 		#tree .file-css { background-position: -144px -0px }
 		#tree .file-fla { background-position: -398px -0px }
+
 header {
     background-color:black;
     color:white;
     text-align:center;
     padding:5px;
 }
-nav {
-    line-height:30px;
-    background-color:#eeeeee;
-    height:600px;
-    width:300px;
-    float:left;
-    padding:5px;
-}
-section {
-    width:350px;
-    float:left;
-    padding:10px;
-}
-section img {
-    margin-left: 50px;
-}
-footer {
-    background-color:black;
-    color:white;
-    clear:both;
-    text-align:center;
-    padding:5px;
-}
+
 </style>
 </head>
 <body>
 
-<header>
-    <h1>City Gallery</h1>
-</header>
-
-<nav>
-    <div id="container">
-        <div id="tree"></div>
-    </div>
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">石头科技</a>
+    <h1 class="form-control form-control-dark w-100">自动化测试结果展示</h1>
 </nav>
+<div class="container-fluid">
 
-<section>
-    <img id="capture" width="360px"></img>
-</section>
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file"></span>
+                            App截屏
+                            <div id="container">
+                                <div id="tree"></div>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:void(0);" id="toreport">
+                            <span data-feather="bar-chart-2"></span>
+                            OTA和BAT自动化测试报告
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id="main">
+        <img id="capture" width="360px"></img>
+        <table class="table" id="report_table" style="display:none">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">产品名字</th>
+                <th scope="col">产品版本</th>
+                <th scope="col">客户端</th>
+                <th scope="col">扫地机SN</th>
+                <th scope="col">扫地机MAC地址</th>
+                <th scope="col">扫地机名字</th>
+                <th scope="col">通过的用例数</th>
+                <th scope="col">失败的用例数</th>
+                <th scope="col">详细报告</th>
+                <th scope="col">log检查结果</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </main>
+</div>
+
 
 </body>
-
+<script src="bootstrap/feather.min.js"></script>
+<script>
+      feather.replace()
+</script>
+<script src="jquery/jquery3.1.1.min.js"></script>
+<script src="jstree/dist/jstree.min.js"></script>
+<script src="bootstrap/bootstrap.min.js" crossorigin="anonymous"></script>
 <script>
 $(function() {
-  $('#tree').jstree({
-    'core' : {
-      'data' : {
-        "url" : "/browse",
-        "dataType" : "json" // needed only if you do not supply JSON headers
-      },
-      'types' : {
-		'default' : { 'icon' : 'folder' },
-		'file' : { 'valid_children' : [], 'icon' : 'file' }
-	  },
-	  'themes' : {
-		'responsive' : false,
-		'variant' : 'small',
-		'stripes' : true
-	  }
+    $('#toreport').click(getreport);
+      $('#tree').jstree({
+        'core' : {
+          'data' : {
+            "url" : "/browse",
+            "dataType" : "json" // needed only if you do not supply JSON headers
+          },
+          'types' : {
+            'default' : { 'icon' : 'folder' },
+            'file' : { 'valid_children' : [], 'icon' : 'file' }
+          },
+          'themes' : {
+            'responsive' : false,
+            'variant' : 'small',
+            'stripes' : true
+          }
+        }
+      }).on("select_node.jstree", function(event, node) {
+            var selected = node.instance.get_selected();
+            $('#report_table').hide();
+            $('#capture').show();
+            $('#capture').attr('src', selected);
+        });
+    function getreport() {
+        $('#capture').hide();
+        $.ajax({
+            url: '/reports',
+            success: function(suites) {
+                console.log(suites);
+                var table = $('#report_table tbody');
+                table.empty();
+                for (var i = 0; i < suites.length; i++) {
+                    var suite = suites[i];
+                    var row = $('<tr/>');
+                    row.append($('<td/>').html(suite.id));
+                    row.append($('<td/>').html(suite.productName));
+                    row.append($('<td/>').html(suite.client));
+                    row.append($('<td/>').html(suite.mobilePlatform));
+                    row.append($('<td/>').html(suite.robotSn));
+                    row.append($('<td/>').html(suite.robotMacAddress));
+                    row.append($('<td/>').html(suite.robotName));
+                    row.append($('<td/>').html(suite.passedCases));
+                    row.append($('<td/>').html(suite.failedCases));
+                    row.append($('<td/>').html(suite.reportFile));
+                    row.append($('<td/>').html(suite.logCheckResultFile));
+                    table.append(row);
+                }
+                $('#report_table').show();
+            }
+        });
     }
-  }).on("select_node.jstree", function(event, node) {
-        var selected = node.instance.get_selected();
-        $('#capture').attr('src', selected);
-    });
 });
+
+
 
 </script>
 </html>

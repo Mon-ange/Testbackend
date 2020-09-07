@@ -1,5 +1,7 @@
 package com.roborock.testbackend.controllers;
 
+import com.roborock.testbackend.entities.TestSuite;
+import com.roborock.testbackend.services.repository.TestSuiteRepository;
 import com.roborock.testbackend.services.storage.Node;
 import com.roborock.testbackend.services.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +13,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 public class DirectoryController {
     @Autowired
     private final StorageService storageService;
+
+    @Autowired
+    private TestSuiteRepository testSuiteRepository;
+
     public DirectoryController(StorageService storageService) {
         this.storageService = storageService;
     }
@@ -29,5 +37,10 @@ public class DirectoryController {
         System.out.println("upload request get");
         storageService.store(file);
         return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+    @GetMapping("reports")
+    public List<TestSuite> getReports() {
+        return testSuiteRepository.findAll();
     }
 }
