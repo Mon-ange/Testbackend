@@ -41,8 +41,18 @@ public class FileSystemStorageService implements StorageService{
     }
 
     @Override
+    public void store(MultipartFile file, Path dir) throws IOException {
+        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        try (InputStream inputStream = file.getInputStream()) {
+            Files.copy(inputStream, dir.resolve(filename),
+                    StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+
+    @Override
     public void store(MultipartFile file) {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        System.out.println("storage rootLocation = " + this.rootLocation);
         System.out.println(filename);
         try {
             if (file.isEmpty()) {
@@ -54,10 +64,7 @@ public class FileSystemStorageService implements StorageService{
                         "Cannot store file with relative path outside current directory "
                                 + filename);
             }
-            try (InputStream inputStream = file.getInputStream()) {
-                Files.copy(inputStream, this.rootLocation.resolve(filename),
-                        StandardCopyOption.REPLACE_EXISTING);
-            }
+            store(file, this.rootLocation);
             if (filename.endsWith("zip")) {
                 String destination = this.rootLocation.toString();
                 String sourceFile = this.rootLocation.resolve(filename).toString();
@@ -116,19 +123,6 @@ public class FileSystemStorageService implements StorageService{
 
     @Override
     public Node browse() {
-        /*
-        if (root.nodeType == NodeType.FILE) return;
-        File root = new File(rootLocation + File.separator + rootDir);
-        for (File file : root.listFiles()) {
-            if (file.isDirectory()) {
-                Node newNode = new Node(file.getName(), NodeType.FOLDER);
-                node.addChild(newNode);
-                browse(file.getAbsolutePath());
-            } else {
-                node.addChild(file.getName());
-            }
-        }
-        return node; */
         String uploadDir = this.rootLocation.getFileName().toString();
         Node root = new Node(uploadDir, uploadDir, "folder", "folder");
         File directory = this.rootLocation.toFile();

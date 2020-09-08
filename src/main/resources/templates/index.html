@@ -49,7 +49,6 @@ header {
     <h1 class="form-control form-control-dark w-100">自动化测试结果展示</h1>
 </nav>
 <div class="container-fluid">
-
     <div class="row">
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
             <div class="sidebar-sticky">
@@ -108,32 +107,33 @@ header {
 <script>
 $(function() {
     $('#toreport').click(getreport);
-      $('#tree').jstree({
-        'core' : {
-          'data' : {
-            "url" : "/browse",
-            "dataType" : "json" // needed only if you do not supply JSON headers
-          },
-          'types' : {
-            'default' : { 'icon' : 'folder' },
-            'file' : { 'valid_children' : [], 'icon' : 'file' }
-          },
-          'themes' : {
-            'responsive' : false,
-            'variant' : 'small',
-            'stripes' : true
-          }
+    $('#tree').jstree({
+      'core' : {
+        'data' : {
+          "url" : "/browse",
+          "dataType" : "json" // needed only if you do not supply JSON headers
+        },
+        'types' : {
+          'default' : { 'icon' : 'folder' },
+          'file' : { 'valid_children' : [], 'icon' : 'file' }
+        },
+        'themes' : {
+          'responsive' : false,
+          'variant' : 'small',
+          'stripes' : true
         }
-      }).on("select_node.jstree", function(event, node) {
-            var selected = node.instance.get_selected();
-            $('#report_table').hide();
-            $('#capture').show();
-            $('#capture').attr('src', selected);
-        });
+      }
+    }).on("select_node.jstree", function(event, node) {
+      var selected = node.instance.get_selected();
+      $('#report_table').hide();
+      $('#capture').show();
+      $('#capture').attr('src', selected);
+    });
+
     function getreport() {
         $('#capture').hide();
         $.ajax({
-            url: '/reports',
+            url: '/suite/browse',
             success: function(suites) {
                 console.log(suites);
                 var table = $('#report_table tbody');
@@ -150,8 +150,8 @@ $(function() {
                     row.append($('<td/>').html(suite.robotName));
                     row.append($('<td/>').html(suite.passedCases));
                     row.append($('<td/>').html(suite.failedCases));
-                    row.append($('<td/>').html(suite.reportFile));
-                    row.append($('<td/>').html(suite.logCheckResultFile));
+                    row.append($('<td/>').html($('<a>').attr('href', suite.reportFile).text('查看报告')));
+                    row.append($('<td/>').html($('<a>').attr('href', suite.logCheckResultFile).text('查看结果')));
                     table.append(row);
                 }
                 $('#report_table').show();
@@ -159,8 +159,5 @@ $(function() {
         });
     }
 });
-
-
-
 </script>
 </html>

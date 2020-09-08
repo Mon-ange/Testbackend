@@ -20,6 +20,7 @@ public class TestSuite {
     private String robotName;
     private int passedCases;
     private int failedCases;
+    private String directory;
     private String reportFile;
     private String logCheckResultFile;
 
@@ -96,5 +97,13 @@ public class TestSuite {
 
     public void setLogCheckResultFile(String logCheckResultFileName) {
         this.logCheckResultFile = logCheckResultFileName;
+    }
+
+    public void setDirectory(String directory) {
+        this.directory = directory;
+    }
+
+    public String getDirectory() {
+        return this.directory;
     }
 }
