@@ -3,7 +3,6 @@ package com.roborock.testbackend.services.testsuite;
 import com.roborock.testbackend.entities.STATUS;
 import com.roborock.testbackend.entities.TestSuite;
 import com.roborock.testbackend.repositories.TestSuiteRepository;
-import com.roborock.testbackend.services.storage.StorageProperties;
 import com.roborock.testbackend.services.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,7 @@ public class TestSuiteServiceImplementation implements TestSuiteService {
     private StorageService storageService;
 
     @Autowired
-    public TestSuiteServiceImplementation(StorageProperties properties) {
+    public TestSuiteServiceImplementation(TestSuiteProperties properties) {
         this.location = properties.getLocation();
         this.rootLocation = Paths.get(this.location);
     }

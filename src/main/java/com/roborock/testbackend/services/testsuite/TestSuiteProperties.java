@@ -2,9 +2,9 @@ package com.roborock.testbackend.services.testsuite;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("testsuite")
+@ConfigurationProperties("service")
 public class TestSuiteProperties {
-    private String location = "upload-dir";
+    private String location = "reports";
 
     public String getLocation() {
         return location;
