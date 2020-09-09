@@ -1,5 +1,6 @@
 package com.roborock.testbackend.services.testsuite;
 
+import com.roborock.testbackend.entities.STATUS;
 import com.roborock.testbackend.entities.TestSuite;
 import com.roborock.testbackend.repositories.TestSuiteRepository;
 import com.roborock.testbackend.services.storage.StorageProperties;
@@ -37,12 +38,16 @@ public class TestSuiteServiceImplementation implements TestSuiteService {
 
     @Override
     public long create(TestSuite testSuite) throws IOException {
-        System.out.println("rootLocation = " + rootLocation);
-        String testSuiteDir = "ota-bat-" + DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss").format(LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        testSuite.setStartTime(now);
+        testSuite.setStatus(STATUS.inprogress);
+        String testSuiteDir = "ota-bat-" + DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss").format(now);
         Path testSuitePath = this.rootLocation.resolve(testSuiteDir);
         Files.createDirectories(testSuitePath);
         testSuite.setDirectory(this.location + File.separator + testSuiteDir);
+        System.out.println("to be saved testSuite = " + testSuite);
         TestSuite newRecord = testSuiteRepository.save(testSuite);
+        System.out.println("newRecord = " + newRecord);
         return newRecord.getId();
     }
 
@@ -53,14 +58,15 @@ public class TestSuiteServiceImplementation implements TestSuiteService {
         Path suiteDir = Paths.get(testSuite.getDirectory());
         storageService.store(reportFile, suiteDir);
         storageService.store(logResultFile, suiteDir);
+
         String reportFileName = reportFile.getOriginalFilename();
         String logResultFileName = logResultFile.getOriginalFilename();
-        System.out.println("testSuiteId = " + testSuiteId);
-        System.out.println("reportFileName = " + reportFileName);
-        System.out.println("logResultFileName = " + logResultFileName);
-        System.out.println("testSuite = " + testSuite);
+        LocalDateTime now = LocalDateTime.now();
+        testSuite.setEndTime(now);
+        testSuite.setStatus(STATUS.complete);
         testSuite.setReportFile(reportFileName);
         testSuite.setLogCheckResultFile(logResultFileName);
+        System.out.println("to be saved testSuite = " + testSuite);
         testSuiteRepository.save(testSuite);
     }
 

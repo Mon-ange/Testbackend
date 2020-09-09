@@ -78,6 +78,8 @@ header {
             <thead>
             <tr>
                 <th scope="col">#</th>
+                <th scope="col">开始时间</th>
+                <th scope="col">结束时间</th>
                 <th scope="col">产品名字</th>
                 <th scope="col">产品版本</th>
                 <th scope="col">客户端</th>
@@ -142,6 +144,8 @@ $(function() {
                     var suite = suites[i];
                     var row = $('<tr/>');
                     row.append($('<td/>').html(suite.id));
+                    row.append($('<td/>').html(suite.startTime));
+                    row.append($('<td/>').html(suite.endTime));
                     row.append($('<td/>').html(suite.productName));
                     row.append($('<td/>').html(suite.client));
                     row.append($('<td/>').html(suite.mobilePlatform));
@@ -150,8 +154,13 @@ $(function() {
                     row.append($('<td/>').html(suite.robotName));
                     row.append($('<td/>').html(suite.passedCases));
                     row.append($('<td/>').html(suite.failedCases));
-                    row.append($('<td/>').html($('<a>').attr('href', suite.reportFile).text('查看报告')));
-                    row.append($('<td/>').html($('<a>').attr('href', suite.logCheckResultFile).text('查看结果')));
+                    if (suite.status == 'complete') {
+                        row.append($('<td/>').html($('<a>').attr('href', suite.reportFile).text('查看报告')));
+                        row.append($('<td/>').html($('<a>').attr('href', suite.logCheckResultFile).text('查看结果')));
+                    } else {
+                        row.append($('<td/>').html('测试中'));
+                        row.append($('<td/>').html('测试中'));
+                    }
                     table.append(row);
                 }
                 $('#report_table').show();

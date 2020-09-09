@@ -1,10 +1,7 @@
 package com.roborock.testbackend.entities;
 
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class TestSuite {
@@ -24,6 +21,13 @@ public class TestSuite {
     private String reportFile;
     private String logCheckResultFile;
 
+    //@Column(columnDefinition = "ENUM('测试中', '已完成')")
+    //@Enumerated(EnumType.STRING)
+    private STATUS status;
+
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+
     public TestSuite() {}
     public TestSuite(String productName, String productVersion, String client, String mobilePlatform, String robotSn,
                      String robotMacAddress, String robotName) {
@@ -40,7 +44,8 @@ public class TestSuite {
     public String toString() {
         return "id = " + id + "productName: " + productName + " productVersion: " + productVersion + " client: " + client
                 + "mobilePlatform: " + mobilePlatform + " robotSn: " + robotSn + " robotMacAddress: " + robotMacAddress
-                + " robotName: " + robotName;
+                + " robotName: " + robotName + " status: " + status + " startTime: " + startTime + " endTime: " + endTime
+                + " directory: " + directory;
     }
 
     public Long getId() {
@@ -105,5 +110,29 @@ public class TestSuite {
 
     public String getDirectory() {
         return this.directory;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setStatus(STATUS status) {
+        this.status = status;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public STATUS getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
 }
