@@ -82,7 +82,8 @@ header {
                 <th scope="col">结束时间</th>
                 <th scope="col">产品名字</th>
                 <th scope="col">产品版本</th>
-                <th scope="col">客户端</th>
+                <th scope="col">客户端机器</th>
+                <th scope="col">客户端平台</th>
                 <th scope="col">扫地机SN</th>
                 <th scope="col">扫地机MAC地址</th>
                 <th scope="col">扫地机名字</th>
@@ -147,6 +148,7 @@ $(function() {
                     row.append($('<td/>').html(suite.startTime));
                     row.append($('<td/>').html(suite.endTime));
                     row.append($('<td/>').html(suite.productName));
+                    row.append($('<td/>').html(suite.productVersion));
                     row.append($('<td/>').html(suite.client));
                     row.append($('<td/>').html(suite.mobilePlatform));
                     row.append($('<td/>').html(suite.robotSn));

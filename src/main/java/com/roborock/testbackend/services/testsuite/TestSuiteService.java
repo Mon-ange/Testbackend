@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface TestSuiteService {
     long create(TestSuite testSuite) throws IOException;
-    void update(long testSuiteId, MultipartFile reportFile, MultipartFile logResultFile) throws IOException;
+    void update(long testSuiteId, MultipartFile zipFile) throws IOException;
     List<TestSuite> browse();
 }

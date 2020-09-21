@@ -34,9 +34,8 @@ public class TestSuiteController {
 
     @PostMapping("/update")
     public ResponseEntity<String> updateTestSuite(@RequestParam("testSuiteId") String testSuiteId,
-                                                  @RequestParam("reportFile") MultipartFile reportFile,
-                                                  @RequestParam("logResultFile") MultipartFile logResultFile) throws IOException {
-        testSuiteService.update(Long.parseLong(testSuiteId), reportFile, logResultFile);
+                                                  @RequestParam("zipFile") MultipartFile zipFile) throws IOException {
+        testSuiteService.update(Long.parseLong(testSuiteId), zipFile);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 

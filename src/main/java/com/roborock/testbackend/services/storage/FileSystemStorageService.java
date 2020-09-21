@@ -47,6 +47,15 @@ public class FileSystemStorageService implements StorageService{
             Files.copy(inputStream, dir.resolve(filename),
                     StandardCopyOption.REPLACE_EXISTING);
         }
+        if (filename.endsWith("zip")) {
+            String destination = dir.toString();
+            String sourceFile = dir.resolve(filename).toString();
+            System.out.println("destination = " + destination);
+            System.out.println("sourceFile = " + sourceFile);
+            ZipFile zipFile = new ZipFile(sourceFile);
+            zipFile.extractAll(destination);
+            Files.delete(dir.resolve(filename));
+        }
     }
 
     @Override
@@ -65,15 +74,6 @@ public class FileSystemStorageService implements StorageService{
                                 + filename);
             }
             store(file, this.rootLocation);
-            if (filename.endsWith("zip")) {
-                String destination = this.rootLocation.toString();
-                String sourceFile = this.rootLocation.resolve(filename).toString();
-                System.out.println("destination = " + destination);
-                System.out.println("sourceFile = " + sourceFile);
-                ZipFile zipFile = new ZipFile(sourceFile);
-                zipFile.extractAll(destination);
-                Files.delete(this.rootLocation.resolve(filename));
-            }
         }
         catch (IOException e) {
             throw new StorageException("Failed to store file " + filename, e);

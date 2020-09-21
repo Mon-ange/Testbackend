@@ -40,10 +40,6 @@ public class TestSuiteServiceImplementation implements TestSuiteService {
         LocalDateTime now = LocalDateTime.now();
         testSuite.setStartTime(now);
         testSuite.setStatus(STATUS.inprogress);
-        String testSuiteDir = "ota-bat-" + DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss").format(now);
-        Path testSuitePath = this.rootLocation.resolve(testSuiteDir);
-        Files.createDirectories(testSuitePath);
-        testSuite.setDirectory(this.location + File.separator + testSuiteDir);
         System.out.println("to be saved testSuite = " + testSuite);
         TestSuite newRecord = testSuiteRepository.save(testSuite);
         System.out.println("newRecord = " + newRecord);
@@ -51,15 +47,16 @@ public class TestSuiteServiceImplementation implements TestSuiteService {
     }
 
     @Override
-    public void update(long testSuiteId, MultipartFile reportFile, MultipartFile logResultFile) throws IOException {
+    public void update(long testSuiteId, MultipartFile zipFile) throws IOException {
         Optional<TestSuite> testSuiteOptional = testSuiteRepository.findById(testSuiteId);
         TestSuite testSuite = testSuiteOptional.get();
-        Path suiteDir = Paths.get(testSuite.getDirectory());
-        storageService.store(reportFile, suiteDir);
-        storageService.store(logResultFile, suiteDir);
-
-        String reportFileName = reportFile.getOriginalFilename();
-        String logResultFileName = logResultFile.getOriginalFilename();
+        storageService.store(zipFile, rootLocation);
+        String zipFileName = zipFile.getOriginalFilename();
+        String dirName = zipFileName.substring(0, zipFileName.lastIndexOf('.'));
+        Path testSuiteDir = this.rootLocation.resolve(dirName);
+        testSuite.setDirectory(this.location + File.separator + dirName);
+        String reportFileName = getFileFromDir(testSuiteDir, "report");
+        String logResultFileName = getFileFromDir(testSuiteDir, "log_check_result");
         LocalDateTime now = LocalDateTime.now();
         testSuite.setEndTime(now);
         testSuite.setStatus(STATUS.complete);
@@ -67,6 +64,13 @@ public class TestSuiteServiceImplementation implements TestSuiteService {
         testSuite.setLogCheckResultFile(logResultFileName);
         System.out.println("to be saved testSuite = " + testSuite);
         testSuiteRepository.save(testSuite);
+    }
+
+    private String getFileFromDir(Path testSuiteDir, String subDir) throws IOException {
+        Path subPath = testSuiteDir.resolve(subDir);
+        File subDirFile = new File(subPath.toString());
+        File[] files = subDirFile.listFiles();
+        return subDir + File.separator + files[0].getName();
     }
 
     @Override
