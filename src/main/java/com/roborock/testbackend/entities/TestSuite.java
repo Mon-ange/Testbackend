@@ -15,8 +15,11 @@ public class TestSuite {
     private String robotSn;
     private String robotMacAddress;
     private String robotName;
+    private int totalCases;
     private int passedCases;
     private int failedCases;
+    private int skippedCases;
+    private String cleanRecord;
     private String directory;
     private String reportFile;
     private String logCheckResultFile;
@@ -88,6 +91,8 @@ public class TestSuite {
         return failedCases;
     }
 
+    public String getCleanRecord() { return cleanRecord; }
+
     public String getReportFile() {
         return reportFile;
     }
@@ -135,4 +140,33 @@ public class TestSuite {
     public LocalDateTime getEndTime() {
         return endTime;
     }
+
+    public void setCleanRecord(String cleanRecord) {
+        this.cleanRecord = cleanRecord;
+    }
+
+    public int getTotalCases() {
+        return totalCases;
+    }
+
+    public void setTotalCases(int totalCases) {
+        this.totalCases = totalCases;
+    }
+
+    public void setPassedCases(int passedCases) {
+        this.passedCases = passedCases;
+    }
+
+    public void setFailedCases(int failedCases) {
+        this.failedCases = failedCases;
+    }
+
+    public int getSkippedCases() {
+        return skippedCases;
+    }
+
+    public void setSkippedCases(int skippedCases) {
+        this.skippedCases = skippedCases;
+    }
+
 }

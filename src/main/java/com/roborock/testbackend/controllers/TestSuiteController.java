@@ -34,8 +34,14 @@ public class TestSuiteController {
 
     @PostMapping("/update")
     public ResponseEntity<String> updateTestSuite(@RequestParam("testSuiteId") String testSuiteId,
+                                                  @RequestParam("total_cases") String totalCases,
+                                                  @RequestParam("passed_cases") String passedCases,
+                                                  @RequestParam("failed_cases") String failedCases,
+                                                  @RequestParam("skipped_cases") String skippedCases,
                                                   @RequestParam("zipFile") MultipartFile zipFile) throws IOException {
-        testSuiteService.update(Long.parseLong(testSuiteId), zipFile);
+        testSuiteService.update(Long.parseLong(testSuiteId),
+                Integer.parseInt(totalCases), Integer.parseInt(passedCases), Integer.parseInt(failedCases), Integer.parseInt(skippedCases),
+                zipFile);
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 

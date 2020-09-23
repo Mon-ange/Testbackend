@@ -32,13 +32,14 @@
 		#tree .file-js { background-position: -434px -18px }
 		#tree .file-css { background-position: -144px -0px }
 		#tree .file-fla { background-position: -398px -0px }
-
+    #report_table td { white-space: pre}
 header {
     background-color:black;
     color:white;
     text-align:center;
     padding:5px;
 }
+
 
 </style>
 </head>
@@ -80,15 +81,12 @@ header {
                 <th scope="col">#</th>
                 <th scope="col">开始时间</th>
                 <th scope="col">结束时间</th>
-                <th scope="col">产品名字</th>
-                <th scope="col">产品版本</th>
-                <th scope="col">客户端机器</th>
-                <th scope="col">客户端平台</th>
-                <th scope="col">扫地机SN</th>
-                <th scope="col">扫地机MAC地址</th>
-                <th scope="col">扫地机名字</th>
-                <th scope="col">通过的用例数</th>
-                <th scope="col">失败的用例数</th>
+                <th scope="col">耗时</th>
+                <th scope="col">产品信息</th>
+                <th scope="col">测试机器信息</th>
+                <th scope="col">扫地机信息</th>
+                <th scope="col">执行情况</th>
+                <th scope="col">清扫记录</th>
                 <th scope="col">详细报告</th>
                 <th scope="col">log检查结果</th>
             </tr>
@@ -133,6 +131,15 @@ $(function() {
       $('#capture').attr('src', selected);
     });
 
+    function getTimeElapsed(date_now, date_future) {
+        var delta = Math.abs(date_future - date_now) / 1000;
+        var hours = Math.floor(delta / 3600) % 24;
+        delta -= hours * 3600;
+        var minutes = Math.floor(delta / 60) % 60;
+        delta -= minutes * 60;
+        var seconds = delta % 60;
+        return ((hours == 0) ? '' : hours + "小时") + ((minutes == 0) ? '' : " " + minutes + "分钟") + ((seconds == 0) ? '' : " " + seconds + "秒");
+    }
     function getreport() {
         $('#capture').hide();
         $.ajax({
@@ -145,17 +152,30 @@ $(function() {
                     var suite = suites[i];
                     var row = $('<tr/>');
                     row.append($('<td/>').html(suite.id));
-                    row.append($('<td/>').html(suite.startTime));
-                    row.append($('<td/>').html(suite.endTime));
-                    row.append($('<td/>').html(suite.productName));
-                    row.append($('<td/>').html(suite.productVersion));
-                    row.append($('<td/>').html(suite.client));
-                    row.append($('<td/>').html(suite.mobilePlatform));
-                    row.append($('<td/>').html(suite.robotSn));
-                    row.append($('<td/>').html(suite.robotMacAddress));
-                    row.append($('<td/>').html(suite.robotName));
-                    row.append($('<td/>').html(suite.passedCases));
-                    row.append($('<td/>').html(suite.failedCases));
+                    var startTime = new Date(Date.parse(suite.startTime));
+                    row.append($('<td/>').html(startTime.toLocaleString().replace(" ", "<br>")));
+                    if (suite.status == 'complete') {
+                        var endTime = new Date(Date.parse(suite.endTime));
+                        row.append($('<td/>').html(endTime.toLocaleString().replace(" ", "<br>")));
+                        row.append($('<td/>').html(getTimeElapsed(startTime, endTime)));
+                    } else {
+                        row.append($('<td/>').html('测试中'));
+                        row.append($('<td/>').html(''));
+                    }
+                    var productInfo = "名称：" + suite.productName + "<br>版本: " + suite.productVersion;
+                    row.append($('<td/>').html(productInfo));
+                    var clientInfo = "机器名：" + suite.client + "<br>平台: " + suite.mobilePlatform;
+                    row.append($('<td/>').html(clientInfo));
+                    var robotInfo = "名字: " + suite.robotName + "<br>SN: " + suite.robotSn + "<br>MAC地址: " + suite.robotMacAddress;
+                    row.append($('<td/>').html(robotInfo));
+                    var test_result = "总数：" + suite.totalCases + "<br>成功: " + suite.passedCases
+                        + "<br>失败: " + suite.failedCases + "<br>跳过: " + suite.skippedCases;
+                    row.append($('<td/>').html(test_result));
+                    row.append($('<td/>').html(
+                    $('<a>').attr('href', suite.cleanRecord).html(
+                    $('<img>').attr('src', suite.cleanRecord).attr('style', 'width:20px'))
+                    )
+                    );
                     if (suite.status == 'complete') {
                         row.append($('<td/>').html($('<a>').attr('href', suite.reportFile).text('查看报告')));
                         row.append($('<td/>').html($('<a>').attr('href', suite.logCheckResultFile).text('查看结果')));
