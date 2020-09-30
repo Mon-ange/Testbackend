@@ -171,11 +171,15 @@ $(function() {
                     var test_result = "总数：" + suite.totalCases + "<br>成功: " + suite.passedCases
                         + "<br>失败: " + suite.failedCases + "<br>跳过: " + suite.skippedCases;
                     row.append($('<td/>').html(test_result));
-                    row.append($('<td/>').html(
-                    $('<a>').attr('href', suite.cleanRecord).html(
-                    $('<img>').attr('src', suite.cleanRecord).attr('style', 'width:20px'))
-                    )
-                    );
+                    var htmlStr = '<td>';
+                    if (suite.cleanRecord) {
+                        var cleanRecords = suite.cleanRecord.split(';');
+                        for (var j = 0; j < cleanRecords.length; j++) {
+                            htmlStr += "<a href='" + cleanRecords[j] + "' target='_self'>截屏" + (j+1) + "</a><br/>";
+                        }
+                    }
+                    htmlStr += '</td>';
+                    row.append(htmlStr);
                     if (suite.status == 'complete') {
                         row.append($('<td/>').html($('<a>').attr('href', suite.reportFile).text('查看报告')));
                         row.append($('<td/>').html($('<a>').attr('href', suite.logCheckResultFile).text('查看结果')));

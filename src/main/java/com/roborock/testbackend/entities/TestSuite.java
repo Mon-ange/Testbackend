@@ -1,7 +1,10 @@
 package com.roborock.testbackend.entities;
 
 import javax.persistence.*;
+import java.io.File;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class TestSuite {
@@ -101,13 +104,7 @@ public class TestSuite {
         return logCheckResultFile;
     }
 
-    public void setReportFile(String reportFileName) {
-        this.reportFile = reportFileName;
-    }
 
-    public void setLogCheckResultFile(String logCheckResultFileName) {
-        this.logCheckResultFile = logCheckResultFileName;
-    }
 
     public void setDirectory(String directory) {
         this.directory = directory;
@@ -141,8 +138,16 @@ public class TestSuite {
         return endTime;
     }
 
-    public void setCleanRecord(String cleanRecord) {
-        this.cleanRecord = cleanRecord;
+    public void setCleanRecord(List<File> cleanRecordFiles) {
+        this.cleanRecord = addAbsolutePath(cleanRecordFiles, "screenshot");
+    }
+
+    public void setReportFile(List<File> reportFiles) {
+        this.reportFile = addAbsolutePath(reportFiles, "report");
+    }
+
+    public void setLogCheckResultFile(List<File> logResultFiles) {
+        this.logCheckResultFile = addAbsolutePath(logResultFiles, "log_check_result");
     }
 
     public int getTotalCases() {
@@ -169,4 +174,8 @@ public class TestSuite {
         this.skippedCases = skippedCases;
     }
 
+    private String addAbsolutePath(List<File> files, String subDir) {
+        return files.stream().map(file -> this.directory + File.separator + subDir + File.separator + file.getName())
+                .collect(Collectors.joining(";"));
+    }
 }

@@ -13,8 +13,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TestSuiteServiceImplementation implements TestSuiteService {
@@ -53,9 +55,9 @@ public class TestSuiteServiceImplementation implements TestSuiteService {
         String dirName = zipFileName.substring(0, zipFileName.lastIndexOf('.'));
         Path testSuiteDir = this.rootLocation.resolve(dirName);
         testSuite.setDirectory(this.location + File.separator + dirName);
-        String cleanRecordFileName = getFileFromDir(testSuiteDir, "screenshot");
-        String reportFileName = getFileFromDir(testSuiteDir, "report");
-        String logResultFileName = getFileFromDir(testSuiteDir, "log_check_result");
+        List<File> cleanRecordFiles = getFilesFromDir(testSuiteDir, "screenshot");
+        List<File> reportFiles = getFilesFromDir(testSuiteDir, "report");
+        List<File> logResultFiles = getFilesFromDir(testSuiteDir, "log_check_result");
         LocalDateTime now = LocalDateTime.now();
         testSuite.setEndTime(now);
         testSuite.setStatus(STATUS.complete);
@@ -63,29 +65,23 @@ public class TestSuiteServiceImplementation implements TestSuiteService {
         testSuite.setPassedCases(passedCases);
         testSuite.setFailedCases(failedCases);
         testSuite.setSkippedCases(skippedCases);
-        testSuite.setCleanRecord(cleanRecordFileName);
-        testSuite.setReportFile(reportFileName);
-        testSuite.setLogCheckResultFile(logResultFileName);
+        testSuite.setCleanRecord(cleanRecordFiles);
+        testSuite.setReportFile(reportFiles);
+        testSuite.setLogCheckResultFile(logResultFiles);
         System.out.println("to be saved testSuite = " + testSuite);
         testSuiteRepository.save(testSuite);
     }
 
-    private String getFileFromDir(Path testSuiteDir, String subDir) throws IOException {
+    private List<File> getFilesFromDir(Path testSuiteDir, String subDir) throws IOException {
         Path subPath = testSuiteDir.resolve(subDir);
         File subDirFile = new File(subPath.toString());
         File[] files = subDirFile.listFiles();
-        return subDir + File.separator + files[0].getName();
+        return Arrays.asList(files);
     }
 
     @Override
     public List<TestSuite> browse() {
         List<TestSuite> testSuites = testSuiteRepository.findAllByOrderByIdDesc();
-        for (TestSuite testSuite: testSuites) {
-            String dir = testSuite.getDirectory();
-            testSuite.setCleanRecord(dir + File.separator + testSuite.getCleanRecord());
-            testSuite.setReportFile(dir + File.separator + testSuite.getReportFile());
-            testSuite.setLogCheckResultFile(dir + File.separator + testSuite.getLogCheckResultFile());
-        }
         return testSuites;
     }
 }
